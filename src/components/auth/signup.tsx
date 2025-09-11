@@ -25,9 +25,13 @@ const Signup = () => {
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault;
+    e.preventDefault();
     // llllllllllllllllllllllll
     {/* supabase later */}
+    if(FormData.password!==FormData.confirmPassword){
+      alert("repeated password doesn't match")//toast laterrrrrrrrrrrrrrrr
+      return
+    }
     console.log(FormData);
   }
 
