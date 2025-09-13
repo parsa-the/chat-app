@@ -79,9 +79,17 @@ const Signup = () => {
           className="p-2 w-70 border rounded-sm font-normal"
           required
         ></input>
-        <button type="submit"  className="bg-black text-white p-2 font-medium w-70 transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800">Sign up</button>
+        <button
+          type="submit"
+          className="bg-black text-white p-2 font-medium w-70 transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800"
+        >
+          Sign up
+        </button>
         <p>
-          alrady have an account? <Link href="/login" className="text-blue-600">Log in</Link>
+          alrady have an account?{" "}
+          <Link href="/login" className="text-blue-600">
+            Log in
+          </Link>
         </p>
       </form>
     </>
