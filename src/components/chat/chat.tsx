@@ -10,20 +10,23 @@ const ChatWind = ({ userid }: { userid: string }) => {
   const currentUser = Usersa.find((user) => user.id === +userid);
   return (
     <div className=" flex flex-col h-full">
-      <div className="flex space-x-2 mt-2">
+      <div className="flex space-x-2">
         <Link href="/chat" className=" sm:hidden">
           <button className="text-blue-500 text-3xl ml-4 mr-1">← </button>
         </Link>
         {currentUser && (
-          <div className="flex space-x-4">
+          <div className="flex space-x-2 pl-5 bg-gray-200 w-full pt-3 pb-3 border-b-1 border-gray-300 shadow">
             <Image
-              src={currentUser.profile || "./public/globe.svg"}
+              src={"/profile.png"}
               height={30}
               width={30}
               alt="profile"
-              className="rounded-full"
+              className="rounded-full w-11 h-11 object-fill bg-gray-400"
             ></Image>
-            <p>{currentUser.name}</p>
+            <div className="ml-3 flex flex-col ">
+              <p>{currentUser.name}</p>
+              <p className="text-gray-500">last seen</p>
+            </div>
           </div>
         )}
       </div>

@@ -1,5 +1,5 @@
 import Users from "@/components/users/users";
-import ChatWind from "@/components/chat/chat";
+
 export default function chatLayout({
   children,
 }: Readonly<{

@@ -41,8 +41,10 @@ const Signup = () => {
     <>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center p-10 w-100 mx-auto mt-20 rounded-lg space-y-10 shadow-xl border border-gray-200"
+        className="flex flex-col items-center justify-center p-10 w-100 mx-auto mt-15 rounded-lg space-y-10 shadow-xl border border-gray-200"
       >
+        <h1 className="font-semibold text-3xl mb-12">Create an account</h1>
+
         <input
           type="email"
           name={"email"}
