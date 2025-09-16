@@ -1,7 +1,6 @@
 import ChatWind from "@/components/chat/chat";
 
-export default async function ChatPage({ params }: { params: { userId: string }}) {
-  const { userId } = await params;
+export default function ChatPage({ params }: { params: { userId: string } }) {
+  const { userId } = params;
   return <ChatWind userid={userId} />;
-  
 }
