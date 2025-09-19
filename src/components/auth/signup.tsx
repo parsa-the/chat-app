@@ -1,6 +1,11 @@
 "use client";
+
 import { useState } from "react";
+import { supabase } from "../../../lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { motion } from "motion/react";
 import Link from "next/link";
+
 const Signup = () => {
   type FormState = {
     email: string;
@@ -9,92 +14,132 @@ const Signup = () => {
     displayName: string;
   };
 
-  const [FormData, setFormData] = useState<FormState>({
+  const [formData, setFormData] = useState<FormState>({
     email: "",
     password: "",
     confirmPassword: "",
     displayName: "",
   });
 
+  const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // llllllllllllllllllllllll
-    {
-      /* supabase later */
-    }
-    if (FormData.password !== FormData.confirmPassword) {
-      alert("repeated password doesn't match"); //toast laterrrrrrrrrrrrrrrr
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
       return;
     }
-    console.log(FormData);
+
+    setSubmitting(true);
+
+    try {
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (authError || !authData.user) {
+        alert(authError?.message || "Signup failed");
+        setSubmitting(false);
+        return;
+      }
+
+      const { error: profileError } = await supabase.from("profiles").insert([
+        {
+          id: authData.user.id,
+          username: formData.displayName,
+          display_name: formData.displayName,
+          email: formData.email,
+          last_seen: new Date().toISOString(),
+        },
+      ]);
+
+      if (profileError) {
+        alert("Failed to create profile");
+        setSubmitting(false);
+        return;
+      }
+
+      alert("Signup successful! Please check your email for confirmation.");
+      router.push("/login");
+    } catch {
+      alert("Unexpected error occurred. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center p-10 w-100 mx-auto mt-15 rounded-lg space-y-10 shadow-xl border border-gray-200"
-      >
-        <h1 className="font-semibold text-3xl mb-12">Create an account</h1>
+    <motion.form
+      initial={{scale:0}}
+      animate={{scale:1}}
+      onSubmit={handleSubmit}
+      className=" flex flex-col items-center justify-center p-10 max-w-sm mx-auto mt-20 rounded-lg space-y-6 shadow-xl border border-gray-200 "
+    >
+      <h1 className="font-semibold text-3xl mb-6">Create an account</h1>
 
-        <input
-          type="email"
-          name={"email"}
-          value={FormData.email}
-          onChange={handleChange}
-          placeholder="Enter Email"
-          className="p-2 w-70 border rounded-sm font-normal"
-          required
-        ></input>
-        <input
-          type="password"
-          name={"password"}
-          value={FormData.password}
-          onChange={handleChange}
-          placeholder="Enter password"
-          className="p-2 w-70 border rounded-sm font-normal"
-          required
-        ></input>
-        <input
-          type="password"
-          name={"confirmPassword"}
-          value={FormData.confirmPassword}
-          onChange={handleChange}
-          placeholder="Repeat password"
-          className="p-2 w-70 border rounded-sm font-normal"
-          required
-        ></input>
-        <input
-          type="text"
-          name={"displayName"}
-          value={FormData.displayName}
-          onChange={handleChange}
-          placeholder="Enter your name"
-          className="p-2 w-70 border rounded-sm font-normal"
-          required
-        ></input>
-        <button
-          type="submit"
-          className="bg-black text-white p-2 font-medium w-70 transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800"
-        >
-          Sign up
-        </button>
-        <p>
-          alrady have an account?{" "}
-          <Link href="/login" className="text-blue-600">
-            Log in
-          </Link>
-        </p>
-      </form>
-    </>
+      <input
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="Enter Email"
+        required
+        className="p-2 w-full border rounded-sm"
+      />
+
+      <input
+        type="password"
+        name="password"
+        value={formData.password}
+        onChange={handleChange}
+        placeholder="Enter password"
+        required
+        className="p-2 w-full border rounded-sm"
+      />
+
+      <input
+        type="password"
+        name="confirmPassword"
+        value={formData.confirmPassword}
+        onChange={handleChange}
+        placeholder="Repeat password"
+        required
+        className="p-2 w-full border rounded-sm"
+      />
+
+      <input
+        type="text"
+        name="displayName"
+        value={formData.displayName}
+        onChange={handleChange}
+        placeholder="Enter your name"
+        required
+        className="p-2 w-full border rounded-sm"
+      />
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="bg-black text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800 disabled:opacity-50"
+      >
+        {submitting ? "Signing up…" : "Sign up"}
+      </button>
+
+      <p>
+        Already have an account?{" "}
+        <Link href="/login" className="text-blue-600">
+          Log in
+        </Link>
+      </p>
+    </motion.form>
   );
 };
 
