@@ -58,6 +58,7 @@ export default function ChatWind({ userid }: { userid: string }) {
 
     loadData();
   }, [userid]);
+
   useEffect(() => {
     if (!currentUserId) return;
 
@@ -66,6 +67,9 @@ export default function ChatWind({ userid }: { userid: string }) {
         const { data, error } = await supabase
           .from("messages")
           .select("*")
+          .or(
+            `and(sender_id.eq.${currentUserId},receiver_id.eq.${userid}),and(sender_id.eq.${userid},receiver_id.eq.${currentUserId})`
+          )
           .order("created_at");
 
         if (error) throw error;
@@ -99,6 +103,7 @@ export default function ChatWind({ userid }: { userid: string }) {
       supabase.removeChannel(channel);
     };
   }, [currentUserId, userid]);
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -122,29 +127,29 @@ export default function ChatWind({ userid }: { userid: string }) {
 
   if (loading) return <ChatSkeleton />;
 
+  const avatarUrl = profile?.avatar_url?.startsWith("http")
+    ? profile.avatar_url
+    : "/Default-profile-pic.png";
+
   return (
-    <div className="flex flex-col h-full shadow-gray-300 shadow-lg rounded-lg border border-gray-300">
-      <div className="flex  items-center p-3 shadow-md shadow-gray-300 bg-gray-400 rounded-lg">
-        <Link href="/chat" className="sm:hidden mr-2 text-blue-500 text-3xl">
+    <div className="flex flex-col h-full bg-white shadow-lg rounded-xl border border-gray-200">
+      <div className="flex items-center p-3 border-b border-gray-200 bg-gray-50 rounded-t-xl">
+        <Link href="/chat" className="sm:hidden mr-3 text-blue-500 text-2xl">
           ←
         </Link>
         <Image
-          src={
-            profile?.avatar_url?.startsWith("http")
-              ? profile.avatar_url
-              : "/Default-profile-pic.png"
-          }
+          src={avatarUrl}
           width={40}
           height={40}
           alt="avatar"
-          className="rounded-full object-fill"
+          className="rounded-full object-cover"
         />
-        <div className="ml-3 font-medium text-gray-800">
-          {profile?.display_name}
+        <div className="ml-3 font-semibold text-gray-800 text-lg">
+          {profile?.display_name || "Unknown User"}
         </div>
       </div>
       <div
-        className="flex-1 overflow-y-auto` p-2 no-scrollbar scroll-smooth"
+        className="flex-1 overflow-y-auto p-4 no-scrollbar bg-gray-50"
         ref={scrollRef}
       >
         {messages.map((msg) => {
@@ -152,19 +157,21 @@ export default function ChatWind({ userid }: { userid: string }) {
           return (
             <motion.div
               key={msg.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className={`flex ${
                 isMine ? "justify-end" : "justify-start"
-              } mb-2`}
+              } mb-3`}
             >
               <div
-                className={`px-4 py-2 rounded-lg max-w-3xs md:max-w-xl break-words whitespace-pre-wrap ${
-                  isMine ? "bg-blue-600 text-white" : "bg-gray-200 text-black"
+                className={`px-4 py-2 rounded-2xl max-w-xs md:max-w-md shadow-sm ${
+                  isMine
+                    ? "bg-blue-600 text-white rounded-br-none"
+                    : "bg-gray-200 text-gray-900 rounded-bl-none"
                 }`}
               >
-                <p>{msg.content}</p>
-                <p className="text-xs mt-1 opacity-70">
+                <p className="text-sm">{msg.content}</p>
+                <p className="text-xs mt-1 opacity-70 text-right">
                   {new Date(msg.created_at).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -175,7 +182,7 @@ export default function ChatWind({ userid }: { userid: string }) {
           );
         })}
       </div>
-      <div className="flex gap-2 p-2 m-2 rounded-xl shadow-sm shadow-gray-400 border border-gray-400 lg:w-2xl w-xs mx-auto">
+      <div className="flex items-center gap-2 p-3 border-t border-gray-200 bg-white rounded-b-xl">
         <input
           className="flex-1 border-none rounded-md px-2 py-1 text-md focus:outline-none"
           placeholder="Type a message..."
