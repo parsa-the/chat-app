@@ -89,14 +89,14 @@ const Users = () => {
   return (
     <div className="flex-1 h-170 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-300 shadow-lg m-2 border-gray-300 border">
       <div className="flex items-center justify-center gap-3 lg:gap-8 p-2 border-b border-gray-400 mb-4 pb-4 ">
-        <button
+        {/* <button
           type="button"
           onClick={() => setMenu(!menu)}
           className="p-2 rounded-md hover:bg-gray-200"
         >
           <Image src="/menu.png" width={7} height={9} alt="menu" />
-          {menu && <Menu />}
-        </button>
+          {menu && <Menu />}local
+        </button> */}
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
       <div>
