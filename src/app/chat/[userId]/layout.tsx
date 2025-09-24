@@ -1,5 +1,4 @@
 import Users from "@/components/users/users";
-
 export default function chatLayout({
   children,
 }: Readonly<{
@@ -7,14 +6,12 @@ export default function chatLayout({
 }>) {
   return (
     <div className="flex flex-row h-screen">
-      {/* sidebar */}
-      <aside className="hidden sm:block w-2/5 border-r">
+      <aside className="hidden sm:block w-2/5">
         <Users></Users>
       </aside>
-
-      {/* chat window */}
-
-      <main className="flex-1 flex flex-col">{children}</main>
+      <div className=" my-auto h-160 border border-gray-300 "></div>
+      
+      <main className="flex-1 flex flex-col sm:m-2 ">{children}</main>
     </div>
   );
 }

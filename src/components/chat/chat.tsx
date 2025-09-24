@@ -1,9 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
+import ChatSkeleton from "../loadings/chatskeleton";
+import toast from "react-hot-toast";
 
 type Message = {
   id: string;
@@ -13,55 +15,79 @@ type Message = {
   created_at: string;
 };
 
-type Profile = { id: string; display_name?: string; avatar_url?: string };
+type Profile = {
+  id: string;
+  display_name?: string;
+  avatar_url?: string;
+};
 
 export default function ChatWind({ userid }: { userid: string }) {
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [user, setUser] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string>("");
   const [profile, setProfile] = useState<Profile | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadData = async () => {
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser();
-      if (!currentUser) return;
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      setUser(currentUser.id);
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url")
-        .eq("id", userid)
-        .single();
-      setProfile(data);
+        if (!user) {
+          toast.error("User not found");
+          return;
+        }
+
+        setCurrentUserId(user.id);
+
+        const { data: profileData, error } = await supabase
+          .from("profiles")
+          .select("id, display_name, avatar_url")
+          .eq("id", userid)
+          .single();
+
+        if (error) throw error;
+        setProfile(profileData);
+      } catch {
+        toast.error("Failed to load chat data");
+      }
     };
+
     loadData();
   }, [userid]);
-
   useEffect(() => {
-    if (!user) return;
+    if (!currentUserId) return;
 
     const loadMessages = async () => {
-      const { data } = await supabase
-        .from("messages")
-        .select("*")
-        .or(
-          `and(sender_id.eq.${user},receiver_id.eq.${userid}),and(sender_id.eq.${userid},receiver_id.eq.${user})`
-        )
-        .order("created_at");
-      setMessages(data || []);
+      try {
+        const { data, error } = await supabase
+          .from("messages")
+          .select("*")
+          .order("created_at");
+
+        if (error) throw error;
+        setMessages(data || []);
+      } catch {
+        toast.error("Failed to load messages");
+      } finally {
+        setLoading(false);
+      }
     };
 
+    loadMessages();
+
     const channel = supabase
-      .channel(`chat:${[user, userid].sort().join("-")}`)
+      .channel(`chat:${[currentUserId, userid].sort().join("-")}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
         ({ new: msg }: { new: Message }) => {
           if (
-            (msg.sender_id === user && msg.receiver_id === userid) ||
-            (msg.sender_id === userid && msg.receiver_id === user)
+            (msg.sender_id === currentUserId && msg.receiver_id === userid) ||
+            (msg.sender_id === userid && msg.receiver_id === currentUserId)
           ) {
             setMessages((prev) => [...prev, msg]);
           }
@@ -69,45 +95,60 @@ export default function ChatWind({ userid }: { userid: string }) {
       )
       .subscribe();
 
-    loadMessages();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, userid]);
+  }, [currentUserId, userid]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const send = async () => {
-    if (!input.trim() || !user) return;
-    await supabase.from("messages").insert({
-      sender_id: user,
-      receiver_id: userid,
-      content: input,
-    });
-    setInput("");
+    if (!input.trim() || !currentUserId) return;
+
+    try {
+      await supabase.from("messages").insert({
+        sender_id: currentUserId,
+        receiver_id: userid,
+        content: input,
+      });
+      setInput("");
+    } catch {
+      toast.error("Failed to send message");
+    }
   };
 
+  if (loading) return <ChatSkeleton />;
+
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center bg-gray-200 p-3 border-b shadow">
+    <div className="flex flex-col h-full shadow-gray-300 shadow-lg rounded-lg border border-gray-300">
+      <div className="flex  items-center p-3 shadow-md shadow-gray-300 bg-gray-400 rounded-lg">
         <Link href="/chat" className="sm:hidden mr-2 text-blue-500 text-3xl">
           ←
         </Link>
         <Image
           src={
-            profile?.avatar_url && profile.avatar_url.startsWith("http")
+            profile?.avatar_url?.startsWith("http")
               ? profile.avatar_url
-              : "/profile.png"
+              : "/Default-profile-pic.png"
           }
           width={40}
           height={40}
           alt="avatar"
-          className="rounded-full"
+          className="rounded-full object-fill"
         />
-        <p className="ml-3 font-medium">{profile?.display_name || "..."}</p>
+        <div className="ml-3 font-medium text-gray-800">
+          {profile?.display_name}
+        </div>
       </div>
-
-      <div className="flex-1 overflow-y-auto p-2">
+      <div
+        className="flex-1 overflow-y-auto` p-2 no-scrollbar scroll-smooth"
+        ref={scrollRef}
+      >
         {messages.map((msg) => {
-          const isMine = msg.sender_id === user;
+          const isMine = msg.sender_id === currentUserId;
           return (
             <motion.div
               key={msg.id}
@@ -118,8 +159,8 @@ export default function ChatWind({ userid }: { userid: string }) {
               } mb-2`}
             >
               <div
-                className={`px-4 py-2 rounded-lg max-w-xs ${
-                  isMine ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+                className={`px-4 py-2 rounded-lg max-w-3xs md:max-w-xl break-words whitespace-pre-wrap ${
+                  isMine ? "bg-blue-600 text-white" : "bg-gray-200 text-black"
                 }`}
               >
                 <p>{msg.content}</p>
@@ -134,10 +175,9 @@ export default function ChatWind({ userid }: { userid: string }) {
           );
         })}
       </div>
-
-      <div className="flex gap-2 p-3">
+      <div className="flex gap-2 p-2 m-2 rounded-xl shadow-sm shadow-gray-400 border border-gray-400 lg:w-2xl w-xs mx-auto">
         <input
-          className="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
+          className="flex-1 border-none rounded-md px-2 py-1 text-md focus:outline-none"
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -146,9 +186,9 @@ export default function ChatWind({ userid }: { userid: string }) {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={send}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+          className="px-3 rounded-lg"
         >
-          Send
+          <Image src="/sent.png" height={20} width={20} alt="Send" />
         </motion.button>
       </div>
     </div>

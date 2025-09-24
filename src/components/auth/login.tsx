@@ -5,6 +5,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
+import { toast } from "react-hot-toast";
 type LoginTypes = {
   email: string;
   password: string;
@@ -35,14 +36,14 @@ const Login = () => {
       });
 
       if (error || !data.user) {
-        alert(error?.message || "Login failed");
+        toast.error(error?.message || "Login failed");
         setSubmitting(false);
         return;
       }
 
-      router.push("/chat"); // Redirect to chat page after login
+      router.push("/chat");
     } catch {
-      alert("Unexpected error occurred. Please try again.");
+      toast.error("Unexpected error occurred. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -51,8 +52,8 @@ const Login = () => {
   return (
     <div className="w-screen">
       <motion.form
-      initial={{scale:0}}
-      animate={{scale:1}}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center p-10 max-w-sm mx-auto mt-32 rounded-lg space-y-6 shadow-xl border border-gray-200"
       >

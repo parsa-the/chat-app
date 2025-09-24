@@ -5,6 +5,7 @@ import { supabase } from "../../../lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   type FormState = {
@@ -33,7 +34,7 @@ const Signup = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -46,7 +47,7 @@ const Signup = () => {
       });
 
       if (authError || !authData.user) {
-        alert(authError?.message || "Signup failed");
+        toast.error (authError?.message || "Signup failed");
         setSubmitting(false);
         return;
       }
@@ -62,15 +63,15 @@ const Signup = () => {
       ]);
 
       if (profileError) {
-        alert("Failed to create profile");
+        toast.error("Failed to create profile");
         setSubmitting(false);
         return;
       }
 
-      alert("Signup successful! Please check your email for confirmation.");
+      toast.success("Signup successful! Please check your email for confirmation.");
       router.push("/login");
     } catch {
-      alert("Unexpected error occurred. Please try again.");
+      toast.error("Unexpected error occurred. Please try again.");
     } finally {
       setSubmitting(false);
     }
