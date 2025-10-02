@@ -5,7 +5,7 @@ export default function chatLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen dark:bg-black">
       <aside className="hidden sm:block w-2/5">
         <Users></Users>
       </aside>

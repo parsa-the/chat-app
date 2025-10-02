@@ -55,9 +55,11 @@ const Login = () => {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center p-10 max-w-sm mx-auto mt-32 rounded-lg space-y-6 shadow-xl border border-gray-200"
+        className="flex flex-col items-center dark:text-white justify-center p-10 max-w-sm mx-auto mt-32 rounded-lg space-y-6 shadow-xl border border-gray-200"
       >
-        <h1 className="font-semibold text-3xl mb-6">Login</h1>
+        <h1 className="font-semibold  text-4xl dark:text-white text-black  mb-8">
+          Login
+        </h1>
 
         <input
           type="email"
@@ -66,7 +68,7 @@ const Login = () => {
           onChange={handleChange}
           placeholder="Enter Email"
           required
-          className="p-2 w-full border rounded-sm"
+          className="p-2  dark:border-zinc-500  w-full border rounded-sm"
         />
 
         <input
@@ -76,18 +78,18 @@ const Login = () => {
           onChange={handleChange}
           placeholder="Enter password"
           required
-          className="p-2 w-full border rounded-sm"
+          className="p-2   dark:border-zinc-500 w-full border rounded-sm"
         />
 
         <button
           type="submit"
           disabled={submitting}
-          className="bg-black text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800 disabled:opacity-50"
+          className="bg-black mt-8 hover:bg-blue-400 dark:bg-blue-700  text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700  disabled:opacity-50"
         >
           {submitting ? "Logging in…" : "Login"}
         </button>
 
-        <p className="mt-3">
+        <p className="mt-3 ">
           Dont have an account?
           <Link href="/signup" className="text-blue-600 ml-1">
             Create an account

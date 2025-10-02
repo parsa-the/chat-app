@@ -87,23 +87,22 @@ const Users = () => {
   if (loading) return <UserSkeleton />;
 
   return (
-    <div className="flex-1 h-170 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-300 shadow-lg m-2 border-gray-300 border">
+    <div className="flex-1 h-170 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-300 shadow-lg m-2 dark:bg-black border-gray-300 border">
       <div className="flex items-center justify-center gap-3 lg:gap-8 p-2 border-b border-gray-400 mb-4 pb-4 ">
-        {/* <button
-          type="button"
+        <div
           onClick={() => setMenu(!menu)}
-          className="p-2 rounded-md hover:bg-gray-200"
+          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-900"
         >
           <Image src="/menu.png" width={7} height={9} alt="menu" />
-          {menu && <Menu />}local
-        </button> */}
+          {menu && <Menu />}
+        </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
       <div>
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (
             <Link key={user.id} href={`/chat/${user.id}`}>
-              <div className="flex flex-row mt-2 bg-gray-100 rounded-xl m-2 shadow border border-gray-300 space-x-4 max-w-xl mx-auto p-2 items-center hover:bg-gray-200 transition">
+              <div className="flex flex-row mt-2 dark:bg-black dark:border-gray-500 dark:text-gray-300 bg-gray-100 rounded-xl m-2 shadow border border-gray-300 space-x-4 max-w-xl mx-auto p-2 items-center hover:bg-gray-200 dark:hover:bg-zinc-900 transition">
                 <Image
                   src={getAvatarUrl(user)}
                   height={50}

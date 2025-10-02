@@ -47,7 +47,7 @@ const Signup = () => {
       });
 
       if (authError || !authData.user) {
-        toast.error (authError?.message || "Signup failed");
+        toast.error(authError?.message || "Signup failed");
         setSubmitting(false);
         return;
       }
@@ -63,12 +63,21 @@ const Signup = () => {
       ]);
 
       if (profileError) {
-        toast.error("Failed to create profile");
+        if (profileError.code === "23505") {
+          toast.error(
+            "That username is already taken, please choose another one."
+          );
+        } else {
+          toast.error("Failed to create profile");
+          console.log(profileError);
+        }
         setSubmitting(false);
         return;
       }
 
-      toast.success("Signup successful! Please check your email for confirmation.");
+      toast.success(
+        "Signup successful! Please check your email for confirmation."
+      );
       router.push("/login");
     } catch {
       toast.error("Unexpected error occurred. Please try again.");
@@ -79,12 +88,12 @@ const Signup = () => {
 
   return (
     <motion.form
-      initial={{scale:0}}
-      animate={{scale:1}}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
       onSubmit={handleSubmit}
-      className=" flex flex-col items-center justify-center p-10 max-w-sm mx-auto mt-20 rounded-lg space-y-6 shadow-xl border border-gray-200 "
+      className=" flex flex-col items-center justify-center dark:text-white p-10 max-w-sm mx-auto mt-20 rounded-lg space-y-6 shadow-xl border border-gray-200 "
     >
-      <h1 className="font-semibold text-3xl mb-6">Create an account</h1>
+      <h1 className="font-semibold text-4xl mb-6">Create an account</h1>
 
       <input
         type="email"
@@ -121,7 +130,7 @@ const Signup = () => {
         name="displayName"
         value={formData.displayName}
         onChange={handleChange}
-        placeholder="Enter your name"
+        placeholder="Enter your username"
         required
         className="p-2 w-full border rounded-sm"
       />
@@ -129,7 +138,7 @@ const Signup = () => {
       <button
         type="submit"
         disabled={submitting}
-        className="bg-black text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700 hover:bg-gray-800 disabled:opacity-50"
+        className="bg-black hover:bg-blue-400 dark:bg-blue-700  mt-8 text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700 disabled:opacity-50"
       >
         {submitting ? "Signing up…" : "Sign up"}
       </button>

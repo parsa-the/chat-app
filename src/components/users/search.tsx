@@ -14,7 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, setSearchTerm }) => {
       placeholder="Search users..."
       value={searchTerm}
       onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full max-w-xs px-3 py-2 border rounded-lg focus:outline-none"
+      className="w-full max-w-xs px-3 py-2  dark:border-gray-500 dark:text-white border rounded-lg focus:outline-none"
     />
   );
 };
