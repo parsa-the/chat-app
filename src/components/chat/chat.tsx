@@ -48,7 +48,6 @@ export default function ChatWind({ userid }: { userid: string }) {
     }
   };
 
-
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -121,7 +120,7 @@ export default function ChatWind({ userid }: { userid: string }) {
         content: input,
       });
       setInput("");
-      await loadMessages(); 
+      await loadMessages();
     } catch {
       toast.error("Failed to send message");
     }
@@ -135,7 +134,6 @@ export default function ChatWind({ userid }: { userid: string }) {
 
   return (
     <div className="flex flex-col h-full bg-white shadow-lg rounded-xl border border-gray-200 ">
-
       <div className="flex items-center p-3 border-b border-gray-200 bg-gray-50 rounded-t-xl dark:bg-black ">
         <Link href="/chat" className="sm:hidden mr-3 text-blue-500 text-2xl">
           ←
@@ -152,7 +150,6 @@ export default function ChatWind({ userid }: { userid: string }) {
         </div>
       </div>
 
-    
       <div
         className="flex-1 overflow-y-auto p-4 no-scrollbar dark:bg-black bg-gray-50"
         ref={scrollRef}
@@ -164,7 +161,9 @@ export default function ChatWind({ userid }: { userid: string }) {
               key={msg.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${isMine ? "justify-end" : "justify-start"} mb-3`}
+              className={`flex ${
+                isMine ? "justify-end" : "justify-start"
+              } mb-3`}
             >
               <div
                 className={`px-4 py-2 rounded-t-2xl max-w-xs md:max-w-md shadow-sm ${

@@ -49,6 +49,7 @@ const Toggle = () => {
           width={20}
           className="w-5"
           alt={darkMode ? "sun image" : "moon image"}
+          priority
         ></Image>
       </motion.div>
     </button>
