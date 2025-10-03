@@ -3,6 +3,7 @@
 - supabase backend
 - Next.js and tailwind.css frontend
 - Framer animations
+
 -------------
 
 ## feeatures :
@@ -14,3 +15,5 @@
 - fast
 
 - smooth animations
+  
+- dark mode toggle
