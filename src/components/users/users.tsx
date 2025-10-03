@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "../../../lib/supabaseClient";
@@ -24,7 +24,20 @@ const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [menu, setMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     let mounted = true;
 
@@ -89,11 +102,13 @@ const Users = () => {
   return (
     <div className="flex-1 h-170 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-300 shadow-lg m-2 dark:bg-black border-gray-300 border">
       <div className="flex items-center justify-center gap-3 lg:gap-8 p-2 border-b border-gray-400 mb-4 pb-4 ">
-        <div
-          onClick={() => setMenu(!menu)}
-          className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-900"
-        >
-          <Image src="/menu.png" width={7} height={9} alt="menu" />
+        <div ref={menuRef} className="relative">
+          <div
+            onClick={() => setMenu((prev) => !prev)}
+            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-900 cursor-pointer"
+          >
+            <Image src="/menu.png" width={7} height={7} alt="menu" />
+          </div>
           {menu && <Menu />}
         </div>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />

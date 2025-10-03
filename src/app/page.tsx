@@ -8,7 +8,7 @@ const Router=useRouter()
 
 useEffect(()=>{
   if(window.location.hostname === "chat-app-gules-six-85.vercel.app" || "http://localhost:3000")
-    Router.push("/signup")
+    Router.push("/login")
 },[Router])
 
 
