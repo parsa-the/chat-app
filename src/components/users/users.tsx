@@ -100,7 +100,7 @@ const Users = () => {
   if (loading) return <UserSkeleton />;
 
   return (
-    <div className="flex-1 h-170 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-300 shadow-lg m-2 dark:bg-black border-gray-300 border">
+    <div className="flex-1 h-screen sm:h-160 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-500 shadow-md m-2 dark:bg-black border-gray-300 border">
       <div className="flex items-center justify-center gap-3 lg:gap-8 p-2 border-b border-gray-400 mb-4 pb-4 ">
         <div ref={menuRef} className="relative">
           <div
@@ -122,6 +122,7 @@ const Users = () => {
                   src={getAvatarUrl(user)}
                   height={50}
                   width={50}
+                  priority
                   alt={`${getDisplayName(user)}'s profile`}
                   className="rounded-full bg-gray-400 object-cover w-12 h-12 object-center"
                 />

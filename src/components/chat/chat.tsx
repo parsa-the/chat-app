@@ -133,8 +133,8 @@ export default function ChatWind({ userid }: { userid: string }) {
     : "/Default-profile-pic.png";
 
   return (
-    <div className="flex flex-col h-full bg-white shadow-lg rounded-xl border border-gray-200 ">
-      <div className="flex items-center p-3 border-b border-gray-200 bg-gray-50 rounded-t-xl dark:bg-black ">
+    <div className="flex flex-col h-screen sm:h-full bg-white shadow-lg rounded-xl border border-gray-200 ">
+      <div className="flex items-center  p-3 border-b border-gray-200 bg-gray-50 rounded-t-xl dark:bg-black ">
         <Link href="/chat" className="sm:hidden mr-3 text-blue-500 text-2xl">
           ←
         </Link>
@@ -142,6 +142,7 @@ export default function ChatWind({ userid }: { userid: string }) {
           src={avatarUrl}
           width={40}
           height={40}
+          priority
           alt="avatar"
           className="rounded-full object-cover"
         />
@@ -169,10 +170,12 @@ export default function ChatWind({ userid }: { userid: string }) {
                 className={`px-4 py-2 rounded-t-2xl max-w-xs md:max-w-md shadow-sm ${
                   isMine
                     ? "bg-linear-to-r from-cyan-500 rounded-bl-2xl to-blue-500 text-white"
-                    : " bg-gray-500 border-t border-r rounded-br-2xl text-white dark:bg-zinc-800 dark:border-zinc-500"
+                    : "bg-gray-500 border-t border-r rounded-br-2xl text-white dark:bg-zinc-800 dark:border-zinc-500"
                 }`}
               >
-                <p className="text-sm">{msg.content}</p>
+                <p className="text-sm break-words whitespace-pre-wrap">
+                  {msg.content}
+                </p>
                 <p className="text-xs mt-1 opacity-70 text-right">
                   {new Date(msg.created_at).toLocaleTimeString([], {
                     hour: "2-digit",
