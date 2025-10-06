@@ -1,5 +1,6 @@
 import Users from "@/components/users/users";
 
-export default function ChatPage() {
+function ChatPage() {
 return  <Users></Users>
 }
+export default ChatPage;

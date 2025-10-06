@@ -1,5 +1,5 @@
 import Users from "@/components/users/users";
-export default function chatLayout({
+function chatLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -15,3 +15,4 @@ export default function chatLayout({
     </div>
   );
 }
+export default chatLayout;

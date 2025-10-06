@@ -21,7 +21,7 @@ type Profile = {
   avatar_url?: string;
 };
 
-export default function ChatWind({ userid }: { userid: string }) {
+function ChatWind({ userid }: { userid: string }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -207,3 +207,4 @@ export default function ChatWind({ userid }: { userid: string }) {
     </div>
   );
 }
+export default ChatWind;
