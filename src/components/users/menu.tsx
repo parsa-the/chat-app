@@ -1,8 +1,5 @@
 "use client";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import Image from "next/image";
 import Toggle from "./toggle";
 import { supabase } from "../../../lib/supabaseClient";
 const Menu = () => {

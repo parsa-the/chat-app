@@ -10,3 +10,9 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+html, body, #__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}

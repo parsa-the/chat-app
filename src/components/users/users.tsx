@@ -8,7 +8,6 @@ import Menu from "./menu";
 import UserSkeleton from "../loadings/usersskeleton";
 import toast from "react-hot-toast";
 import SearchBar from "./search";
-
 type User = {
   id: string;
   display_name?: string;
@@ -28,20 +27,17 @@ const Users = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (!menuRef.current?.contains(event.target as Node)) {
         setMenu(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  useEffect(() => {
-    let mounted = true;
 
-    const fetchAll = async () => {
+  useEffect(() => {
+    const fetchUsers = async () => {
       try {
         const { data: authData, error: authError } =
           await supabase.auth.getUser();
@@ -51,43 +47,42 @@ const Users = () => {
         }
 
         const currentUserId = authData.user.id;
-        const { data, error } = await supabase
+
+        const { data: usersData, error } = await supabase
           .from("profiles")
           .select("*")
           .neq("id", currentUserId);
 
         if (error) throw error;
-        if (mounted) setUsers(data || []);
-      } catch (err: unknown) {
-        console.error(err);
+        setUsers(usersData || []);
+      } catch (err) {
+        console.error("Error fetching users:", err);
         toast.error("Error fetching users");
       } finally {
-        if (mounted) setLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchAll();
-    return () => {
-      mounted = false;
-    };
+    fetchUsers();
   }, []);
 
   const getDisplayName = (user: User): string => {
     return (
-      user.display_name ||
-      user.name ||
-      user.full_name ||
-      user.username ||
-      user.email?.split("@")[0] ||
+      user.display_name ??
+      user.name ??
+      user.full_name ??
+      user.username ??
+      user.email?.split("@")[0] ??
       "Unknown User"
     );
   };
 
   const getAvatarUrl = (user: User): string => {
-    if (!user.avatar_url) return "/Default-profile-pic.png";
+    const url = user.avatar_url;
+    if (!url) return "/Default-profile-pic.png";
     try {
-      new URL(user.avatar_url);
-      return user.avatar_url;
+      new URL(url);
+      return url;
     } catch {
       return "/Default-profile-pic.png";
     }
@@ -100,7 +95,7 @@ const Users = () => {
   if (loading) return <UserSkeleton />;
 
   return (
-    <div className="flex-1 h-screen sm:h-160 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-500 shadow-md m-2 dark:bg-black border-gray-300 border">
+    <div className="flex-1 h-screen sm:h-169 no-scrollbar scroll-smooth overflow-y-auto p-2 rounded-lg shadow-gray-500 shadow-md m-2 dark:bg-black border-gray-300 border">
       <div className="flex items-center justify-center gap-3 lg:gap-8 p-2 border-b border-gray-400 mb-4 pb-4 ">
         <div ref={menuRef} className="relative">
           <div
