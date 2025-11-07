@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { toast } from "react-hot-toast";
+
 type LoginTypes = {
   email: string;
   password: string;
@@ -50,52 +51,54 @@ const Login = () => {
   }
 
   return (
-    <div className="w-screen">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4">
       <motion.form
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
         onSubmit={handleSubmit}
-        className="flex flex-col items-center dark:text-white justify-center p-10 max-w-sm mx-auto mt-32 rounded-lg space-y-6 shadow-xl border border-gray-200"
+        className="flex flex-col items-center justify-center w-full max-w-md p-8 rounded-2xl shadow-lg bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 space-y-6"
       >
-        <h1 className="font-semibold  text-4xl dark:text-white text-black  mb-8">
+        <h1 className="font-semibold   text-3xl sm:text-4xl dark:text-white text-gray-900 mb-10">
           Login
         </h1>
 
-        <input
-          type="email"
-          name="email"
-          value={loginData.email}
-          onChange={handleChange}
-          placeholder="Enter Email"
-          required
-          className="p-2  dark:border-zinc-500  w-full border rounded-sm"
-        />
+        <div className="w-full space-y-4">
+          <input
+            type="email"
+            name="email"
+            value={loginData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
 
-        <input
-          type="password"
-          name="password"
-          value={loginData.password}
-          onChange={handleChange}
-          placeholder="Enter password"
-          required
-          className="p-2   dark:border-zinc-500 w-full border rounded-sm"
-        />
+          <input
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
+            placeholder="Enter your password"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
+        </div>
 
         <button
           type="submit"
           disabled={submitting}
-          className="bg-black mt-8 hover:bg-blue-400 dark:bg-blue-700  text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700  disabled:opacity-50"
+          className="w-full font-bold py-3 mt-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-md transition duration-300 ease-in-out disabled:opacity-50"
         >
           {submitting ? "Logging in…" : "Login"}
         </button>
 
-        <p className="mt-3 ">
-          Dont have an account?
-          <Link href="/signup" className="text-blue-600 ml-1">
-            Create an account
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+          Don’t have an account?
+          <Link href="/signup" className="text-blue-600 hover:underline ml-1">
+            Sign up
           </Link>
         </p>
-        <p></p>
       </motion.form>
     </div>
   );

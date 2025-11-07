@@ -14,7 +14,7 @@ const Menu = () => {
       animate={{ opacity: 1, scaleY: 1 }}
       transition={{ duration: 0.09 }}
       style={{ transformOrigin: "top" }}
-      className="absolute dark:bg-black dark:text-white bg-white ml-5 flex flex-col border w-40 items-center py-4 space-y-3 rounded-lg border-gray-300 shadow-md shadow-gray-400"
+      className="absolute dark:bg-black dark:text-white bg-white ml-5 flex flex-col border w-40 items-center py-4 space-y-3 rounded-lg border-gray-600 shadow-md shadow-gray-900"
     >
       <Toggle />
       <div className="border-t border-gray-400 w-32" />

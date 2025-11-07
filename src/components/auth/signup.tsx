@@ -64,9 +64,7 @@ const Signup = () => {
 
       if (profileError) {
         if (profileError.code === "23505") {
-          toast.error(
-            "That username is already taken, please choose another one."
-          );
+          toast.error("That username is already taken, please choose another one.");
         } else {
           toast.error("Failed to create profile");
           console.log(profileError);
@@ -75,9 +73,7 @@ const Signup = () => {
         return;
       }
 
-      toast.success(
-        "Signup successful! Please check your email for confirmation."
-      );
+      toast.success("Signup successful! Please check your email for confirmation.");
       router.push("/login");
     } catch {
       toast.error("Unexpected error occurred. Please try again.");
@@ -87,69 +83,76 @@ const Signup = () => {
   }
 
   return (
-    <motion.form
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      onSubmit={handleSubmit}
-      className=" flex flex-col items-center justify-center dark:text-white p-10 max-w-sm mx-auto mt-20 rounded-lg space-y-6 shadow-xl border border-gray-200 "
-    >
-      <h1 className="font-semibold text-4xl mb-6">Create an account</h1>
-
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Enter Email"
-        required
-        className="p-2 w-full border rounded-sm"
-      />
-
-      <input
-        type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="Enter password"
-        required
-        className="p-2 w-full border rounded-sm"
-      />
-
-      <input
-        type="password"
-        name="confirmPassword"
-        value={formData.confirmPassword}
-        onChange={handleChange}
-        placeholder="Repeat password"
-        required
-        className="p-2 w-full border rounded-sm"
-      />
-
-      <input
-        type="text"
-        name="displayName"
-        value={formData.displayName}
-        onChange={handleChange}
-        placeholder="Enter your username"
-        required
-        className="p-2 w-full border rounded-sm"
-      />
-
-      <button
-        type="submit"
-        disabled={submitting}
-        className="bg-black hover:bg-blue-400 dark:bg-blue-700  mt-8 text-white p-2 font-medium w-full transition duration-300 ease-in-out rounded-sm active:bg-gray-700 disabled:opacity-50"
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 dark:bg-zinc-900 px-4">
+      <motion.form
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center justify-center w-full max-w-md p-8 rounded-2xl shadow-lg bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 space-y-6"
       >
-        {submitting ? "Signing up…" : "Sign up"}
-      </button>
+        <h1 className="font-semibold text-3xl sm:text-4xl dark:text-white text-gray-900 mb-10">
+          Create an account
+        </h1>
 
-      <p>
-        Already have an account?{" "}
-        <Link href="/login" className="text-blue-600">
-          Log in
-        </Link>
-      </p>
-    </motion.form>
+        <div className="w-full space-y-4">
+          <input
+            type="text"
+            name="displayName"
+            value={formData.displayName}
+            onChange={handleChange}
+            placeholder="Enter your username"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
+
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
+
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Enter password"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
+
+          <input
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Repeat password"
+            required
+            className="p-3 w-full border dark:border-zinc-600 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 dark:placeholder-gray-400"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full py-3  mt-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-md transition duration-300 ease-in-out disabled:opacity-50"
+        >
+          {submitting ? "Signing up…" : "Sign up"}
+        </button>
+
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
+          Already have an account?
+          <Link href="/login" className="text-blue-600  hover:underline ml-1">
+            Log in
+          </Link>
+        </p>
+      </motion.form>
+    </div>
   );
 };
 

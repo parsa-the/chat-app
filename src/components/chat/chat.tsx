@@ -133,27 +133,29 @@ function ChatWind({ userid }: { userid: string }) {
     : "/Default-profile-pic.png";
 
   return (
-    <div className="flex flex-col h-screen sm:h-full bg-white shadow-lg rounded-xl border border-gray-200 ">
-      <div className="flex items-center  p-3 border-b border-gray-200 bg-gray-50 rounded-t-xl dark:bg-black ">
-        <Link href="/chat" className="sm:hidden mr-3 text-blue-500 text-2xl">
+    <div className="flex flex-col h-screen sm:h-full bg-gray-50 dark:bg-zinc-900 shadow-lg rounded-xl border border-gray-200 dark:border-zinc-800">
+      {/* Header */}
+      <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-t-xl">
+        <Link href="/chat" className="sm:hidden text-blue-500 text-2xl">
           ←
         </Link>
         <Image
           src={avatarUrl}
-          width={40}
-          height={40}
+          width={44}
+          height={44}
           priority
           alt="avatar"
-          className="rounded-full object-cover"
+          className="rounded-full object-cover border border-gray-200 dark:border-zinc-700"
         />
-        <div className="ml-3 font-semibold text-gray-800 text-lg dark:text-gray-200">
+        <div className="font-semibold text-gray-900 dark:text-white text-lg truncate">
           {profile?.display_name || "Unknown User"}
         </div>
       </div>
 
+      {/* Messages */}
       <div
-        className="flex-1 overflow-y-auto p-4 no-scrollbar dark:bg-black bg-gray-50"
         ref={scrollRef}
+        className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar bg-gray-50 dark:bg-zinc-950"
       >
         {messages.map((msg) => {
           const isMine = msg.sender_id === currentUserId;
@@ -162,20 +164,17 @@ function ChatWind({ userid }: { userid: string }) {
               key={msg.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${
-                isMine ? "justify-end" : "justify-start"
-              } mb-3`}
+              transition={{ duration: 0.2 }}
+              className={`flex ${isMine ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`px-4 py-2 rounded-t-2xl max-w-xs md:max-w-md shadow-sm ${
+                className={`px-4 py-2 max-w-xs md:max-w-md rounded-2xl text-sm shadow-sm ${
                   isMine
-                    ? "bg-linear-to-r from-cyan-500 rounded-bl-2xl to-blue-500 text-white"
-                    : "bg-gray-500 border-t border-r rounded-br-2xl text-white dark:bg-zinc-800 dark:border-zinc-500"
+                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-br-none"
+                    : "bg-zinc-200 dark:bg-zinc-800 text-gray-900 dark:text-gray-100 rounded-bl-none"
                 }`}
               >
-                <p className="text-sm break-words whitespace-pre-wrap">
-                  {msg.content}
-                </p>
+                <p className="break-words whitespace-pre-wrap">{msg.content}</p>
                 <p className="text-xs mt-1 opacity-70 text-right">
                   {new Date(msg.created_at).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -188,23 +187,25 @@ function ChatWind({ userid }: { userid: string }) {
         })}
       </div>
 
-      <div className="flex items-center gap-2 p-3 border-t border-gray-200 bg-white rounded-b-xl dark:bg-black">
+      {/* Input Area */}
+      <div className="flex items-center gap-3 p-3 border-t border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-b-xl">
         <input
-          className="flex-1 border-none rounded-md px-2 py-1 text-md focus:outline-none dark:text-white"
+          className="flex-1 bg-transparent border-none rounded-md px-3 py-2 text-md focus:outline-none dark:text-white"
           placeholder="Type a message..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
+          onKeyDown={(e) => e.key === 'Enter' && send()}
         />
         <motion.button
-          whileTap={{ scale: 0.95 }}
+          whileTap={{ scale: 0.9 }}
           onClick={send}
-          className="px-3 rounded-lg"
+          className="p-2 rounded-md hover:bg-blue-100 dark:hover:bg-zinc-800 transition"
         >
-          <Image src="/sent.png" height={20} width={20} alt="Send" />
+          <Image src="/sent.png" height={22} width={22} alt="Send" />
         </motion.button>
       </div>
     </div>
   );
 }
+
 export default ChatWind;

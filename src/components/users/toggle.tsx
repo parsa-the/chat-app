@@ -5,20 +5,28 @@ import Image from "next/image";
 import { motion } from "motion/react";
 
 const Toggle = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState<boolean | null>(null);
 
+  // ✅ Sync with localStorage on mount
   useEffect(() => {
-    const isDark = localStorage.getItem("theme") === "dark";
+    const storedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    const isDark = storedTheme === "dark" || (!storedTheme && prefersDark);
     setDarkMode(isDark);
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
+  // ✅ Toggle handler
   const handleDarkMode = () => {
     const newMode = !darkMode;
     setDarkMode(newMode);
     document.documentElement.classList.toggle("dark", newMode);
     localStorage.setItem("theme", newMode ? "dark" : "light");
   };
+
+  // ⏳ Avoid flicker on hydration
+  if (darkMode === null) return null;
 
   return (
     <button
